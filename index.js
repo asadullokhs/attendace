@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 
 const userRouter = require("./src/Router/userRouter")
+const groupRouter = require("./src/Router/groupRouter")
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/user", userRouter);
+app.use("/group", groupRouter);
 
 const MONGO_URL = process.env.MONGO_URL;
 

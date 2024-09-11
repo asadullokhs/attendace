@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 
-const JWT_SECRET_KEY = process.env.JWT_SECRET;
+const JWT_SECRET_KEY = process.env.JWT_SECRET || "ota_maxf1y";
 
 const authMiddlewear = (req, res, next) => {
   let token = req.headers.token;

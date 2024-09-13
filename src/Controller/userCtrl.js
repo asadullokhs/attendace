@@ -69,10 +69,32 @@ const userCtrl = {
       res.status(500).json({ message: error.message });
     }
   },
+  getUser: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const user = await Users.findById(id);
+      if (user) {
+        const { password, ...otherDetails } = user._doc;
+        return res.status(200).send({ message: "Success", user: otherDetails });
+      }
+      res.status(404).send({ message: "User not fond!" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  },
 
-  getOne: async (req, res) => {
-    
-  }
+  getAllUsers: async function (req, res) {
+    try {
+      if ((req.userIsAdmin)) {
+        const user = await Users.find();
+        res.status(200).send({ message: "All groups", users: user });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ message: error.message });
+    }
+  },
 };
 
 module.exports = userCtrl;

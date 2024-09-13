@@ -1,5 +1,6 @@
 
 const Group = require("../Model/groupModel");
+const Users = require("../Model/userModel")
 
 const groupCtrl = {
     addGroup: async function (req, res) {
@@ -21,6 +22,36 @@ const groupCtrl = {
     
             await newGroup.save();
             res.status(200).send({ message: "New group added successfuly", newGroup });
+          }
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: error.message });
+        }
+      },
+      getAllGroup: async function (req, res) {
+        try {
+          if ((req.userIsAdmin)) {
+            const group = await Group.find();
+            res.status(200).send({ message: "All groups", gropus: group });
+          }
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: error.message });
+        }
+      },
+
+      deleteGroup: async function (req, res) {
+        const { id } = req.params;
+        try {
+          if (req.userIsAdmin) {
+            const deleteGroup = await Group.findByIdAndDelete(id);
+            if (deleteGroup) {
+              await Users.deleteMany({ group: id });
+              return res.status(200).send({
+                message: `Group deleted successfuly`,
+              });
+            }
+            res.status(404).send({ message: "Group not found" });
           }
         } catch (error) {
           console.log(error);

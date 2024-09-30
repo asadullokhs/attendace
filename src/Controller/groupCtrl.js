@@ -30,7 +30,7 @@ const groupCtrl = {
       },
       getAllGroup: async function (req, res) {
         try {
-          if ((req.userIsAdmin)) {
+          if ((req.userIsAdmin || req.user.role === 'teacher')) {
             const group = await Group.find();
             res.status(200).send({ message: "All groups", gropus: group });
           }
@@ -52,6 +52,31 @@ const groupCtrl = {
               });
             }
             res.status(404).send({ message: "Group not found" });
+          }
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({ message: error.message });
+        }
+      },
+
+      updateGroup: async function (req, res) {
+        const { id } = req.params;
+        const { name } = req.body;
+        try {
+          if ((req.userIsAdmin || req.user.role === "teacher")) {
+            const oldGroup = await Group.findOne({ name });
+            if (oldGroup) {
+              return res.status(400).send({
+                message: `Group named as ${oldGroup.name} already exists`,
+              });
+            }
+    
+            const updatedGroup = await Group.findByIdAndUpdate(id, req.body, {
+              new: true,
+            });
+            return res
+              .status(200)
+              .send({ message: "Group updated successfuly", group: updatedGroup });
           }
         } catch (error) {
           console.log(error);

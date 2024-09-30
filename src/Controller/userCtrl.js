@@ -95,6 +95,33 @@ const userCtrl = {
       res.status(500).send({ message: error.message });
     }
   },
+
+    // Update a User
+    updateUser: async (req, res) => {
+      const { id } = req.params;
+      const { userIsAdmin } = req;
+      try {
+        if (userIsAdmin || req.user.role === "teacher") {
+          if(req.body.email) {
+            const oldUser = await Users.findOne({email: req.body.email});
+            if (oldUser) return res.status(400).json({ message: "This is email already exists!" });
+          }
+  
+          if (req.body.password) {
+            const hashedPassword = await bcrypt.hash(req.body.password, 12);
+            req.body.password = hashedPassword;
+          }
+  
+          const updatedUser = await Users.findByIdAndUpdate(id, req.body, { new: true });
+          const { password, ...otherDetails } = updatedUser._doc;
+          res.status(200).json(otherDetails);
+        } else {
+          res.status(403).json({ message: " Access Deined!. You can update only your own Account!" });
+        }
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    },
 };
 
 module.exports = userCtrl;

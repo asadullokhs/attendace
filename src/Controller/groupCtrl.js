@@ -83,6 +83,34 @@ const groupCtrl = {
           res.status(500).send({ message: error.message });
         }
       },
+
+      getGroupById: async (req, res) => {
+        const { id } = req.params;
+        try {
+          const group = await Group.aggregate([
+            {
+              $match: { _id: new mongoose.Types.ObjectId(id) },
+            },
+            {
+              $lookup: {
+                from: "users",
+                let: { group: "$_id" },
+                pipeline: [{ $match: { $expr: { $eq: ["$group", "$$group"] } } }],
+                as: "users",
+              },
+            },
+          ]);
+    
+          if (!group) {
+            return res.status(404).json({ message: "Group not found" });
+          }
+    
+          res.status(200).json({ message: "One group", group });
+        } catch (error) {
+          console.log(error);
+          res.status(503).json(error.message);
+        }
+      },
 };
 
 module.exports = groupCtrl;

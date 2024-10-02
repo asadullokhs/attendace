@@ -74,16 +74,16 @@ const userCtrl = {
     try {
       const user = await Users.findById(id);
       if (user) {
+        const attendanceRecords = await Attendance.find({ user: id });
         const { password, ...otherDetails } = user._doc;
-        return res.status(200).send({ message: "Success", user: otherDetails });
+        return res.status(200).send({ message: "Success", user: otherDetails, attendance: attendanceRecords });
       }
-      res.status(404).send({ message: "User not fond!" });
+      res.status(404).send({ message: "User not found!" });
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: error.message });
     }
   },
-
   getAllUsers: async function (req, res) {
     try {
       if (req.userIsAdmin) {

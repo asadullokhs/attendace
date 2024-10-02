@@ -9,7 +9,7 @@ const groupSchema = new mongoose.Schema(
     },
     weekDay: {
       type: String,
-      enum: ["odd, even"],
+      enum: ["odd","even","all"],
       required: true,
     },
     students: {

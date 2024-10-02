@@ -68,7 +68,7 @@ const groupCtrl = {
         try {
           if ((req.userIsAdmin || req.user.role === 'teacher')) {
             const group = await Group.find();
-            res.status(200).send({ message: "All groups", gropus: group });
+            res.status(200).send({ message: "All groups", groups: group });
           }
         } catch (error) {
           console.log(error);

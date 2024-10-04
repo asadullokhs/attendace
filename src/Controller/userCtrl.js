@@ -87,7 +87,7 @@ const userCtrl = {
   getAllUsers: async function (req, res) {
     try {
       if (req.userIsAdmin || req.user.role === 'teacher') {
-        const user = await Users.find().select("_id email number firstName group role");
+        const user = await Users.find().select("_id email number firstName lastName group role");
         res.status(200).send({ message: "All groups", users: user });
       }
     } catch (error) {
